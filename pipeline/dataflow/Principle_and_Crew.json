@@ -41,6 +41,9 @@
 				},
 				{
 					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -75,7 +78,8 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"TitlePrinciple sink(allowSchemaDrift: true,",
+				"TitlePrinciple derive(tconst = lower(tconst)) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TCONST as string,",
@@ -95,11 +99,11 @@
 				"     stageInsert: true,",
 				"     mapColumn(",
 				"          TCONST = tconst,",
+				"          ORDERING = ordering,",
 				"          NCONST = nconst,",
 				"          CATEGORY = category,",
 				"          JOB = job,",
-				"          CHARACTERS = characters,",
-				"          ORDERING = ordering",
+				"          CHARACTERS = characters",
 				"     )) ~> sink1",
 				"flatten1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
