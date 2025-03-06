@@ -7,6 +7,10 @@
 		},
 		"annotations": [],
 		"type": "SnowflakeV2Table",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": "IMDB_SCHEMA",
+			"table": "STG_TITLE_CREW"
+		}
 	}
 }
