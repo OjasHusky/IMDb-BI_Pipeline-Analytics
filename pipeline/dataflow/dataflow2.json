@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "titleEpisode"
+				},
+				{
+					"dataset": {
+						"referenceName": "name_basics",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -33,6 +40,17 @@
 				"     validateSchema: false,",
 				"     limit: 1000,",
 				"     ignoreNoFilesFound: false) ~> titleEpisode",
+				"source(output(",
+				"          nconst as string,",
+				"          primaryName as string,",
+				"          birthYear as string,",
+				"          deathYear as string,",
+				"          primaryProfession as string,",
+				"          knownForTitles as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
 				"titleEpisode sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
