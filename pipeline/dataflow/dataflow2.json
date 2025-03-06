@@ -26,6 +26,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTitleRating",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [],
@@ -47,6 +54,7 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     limit: 1000,",
 				"     ignoreNoFilesFound: false) ~> titleRating",
 				"titleEpisode sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -69,7 +77,22 @@
 				"          PARENTTCONST = parentTconst,",
 				"          SEASONNUMBER = seasonNumber,",
 				"          EPISODENUMBER = episodeNumber",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"titleRating sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TCONST as string,",
+				"          AVERAGERATING as double,",
+				"          NUMVOTES as decimal(38,0)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> sink2"
 			]
 		}
 	}
