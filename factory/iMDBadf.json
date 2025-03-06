@@ -1,9 +1,0 @@
-{
-	"name": "iMDBadf",
-	"location": "eastus",
-	"identity": {
-		"type": "SystemAssigned",
-		"principalId": "19cb3003-e689-4990-8d51-5c02ce058194",
-		"tenantId": "a8eec281-aaa3-4dae-ac9b-9a398b9215e7"
-	}
-}
