@@ -1,0 +1,59 @@
+{
+	"name": "SnowflakeTitleBasics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeiMDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "TCONST",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "TITLETYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "PRIMARYTITLE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ORIGINALTITLE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ISADULT",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "STARTYEAR",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "ENDYEAR",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "RUNTIMEMINUTES",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "GENRES",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "IMDB_SCHEMA",
+			"table": "STG_TITLE_BASICS"
+		}
+	}
+}
