@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "titleEpisode"
+				},
+				{
+					"dataset": {
+						"referenceName": "titleRating",
+						"type": "DatasetReference"
+					},
+					"name": "titleRating"
 				}
 			],
 			"sinks": [
@@ -33,6 +40,14 @@
 				"     validateSchema: false,",
 				"     limit: 1000,",
 				"     ignoreNoFilesFound: false) ~> titleEpisode",
+				"source(output(",
+				"          tconst as string,",
+				"          averageRating as string,",
+				"          numVotes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> titleRating",
 				"titleEpisode sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
