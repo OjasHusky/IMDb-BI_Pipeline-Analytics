@@ -1,5 +1,5 @@
 {
-	"name": "SnowflakeTable2",
+	"name": "SnowflakeTitleCrew",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SnowflakeiMDB",
