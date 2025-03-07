@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "set1",
+				"name": "Name_TitleBasics_Akas",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -29,7 +29,7 @@
 				}
 			},
 			{
-				"name": "set2",
+				"name": "Episode_Rating",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -44,7 +44,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow2",
+						"referenceName": "titleEpisode_and_Rating",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -55,7 +55,7 @@
 				}
 			},
 			{
-				"name": "Principle_and_Crew",
+				"name": "Principle_Crew",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

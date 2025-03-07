@@ -6,30 +6,30 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "titlePrincipals",
 						"type": "DatasetReference"
 					},
-					"name": "TitlePrinciple"
+					"name": "titlePrinciple"
 				},
 				{
 					"dataset": {
-						"referenceName": "DelimitedText2",
+						"referenceName": "titleCrew",
 						"type": "DatasetReference"
 					},
-					"name": "Titlecrew"
+					"name": "titlecrew"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SnowflakeTable1",
+						"referenceName": "SnowflakeTitlePrincipal",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
 				},
 				{
 					"dataset": {
-						"referenceName": "SnowflakeTable2",
+						"referenceName": "SnowflakeTitleCrew",
 						"type": "DatasetReference"
 					},
 					"name": "sink2"
@@ -55,7 +55,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     limit: 1000,",
-				"     ignoreNoFilesFound: false) ~> TitlePrinciple",
+				"     ignoreNoFilesFound: false) ~> titlePrinciple",
 				"source(output(",
 				"          tconst as string,",
 				"          directors as string,",
@@ -64,8 +64,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     limit: 1000,",
-				"     ignoreNoFilesFound: false) ~> Titlecrew",
-				"Titlecrew derive(directors = split(directors,','),",
+				"     ignoreNoFilesFound: false) ~> titlecrew",
+				"titlecrew derive(directors = split(directors,','),",
 				"          writers = split(writers,',')) ~> derivedColumn1",
 				"derivedColumn1 foldDown(unrollMultiple(directors,writers),",
 				"     mapColumn(",
@@ -75,7 +75,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"TitlePrinciple sink(allowSchemaDrift: true,",
+				"titlePrinciple sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TCONST as string,",
@@ -89,17 +89,18 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     stageInsert: true,",
 				"     mapColumn(",
 				"          TCONST = tconst,",
+				"          ORDERING = ordering,",
 				"          NCONST = nconst,",
 				"          CATEGORY = category,",
 				"          JOB = job,",
-				"          CHARACTERS = characters,",
-				"          ORDERING = ordering",
+				"          CHARACTERS = characters",
 				"     )) ~> sink1",
 				"flatten1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -107,10 +108,16 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true) ~> sink2"
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          TCONST = tconst,",
+				"          DIRECTORS = directors,",
+				"          WRITERS = writers",
+				"     )) ~> sink2"
 			]
 		}
 	}
