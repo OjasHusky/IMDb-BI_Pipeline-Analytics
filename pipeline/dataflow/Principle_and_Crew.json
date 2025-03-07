@@ -22,14 +22,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SnowflakeTable1",
+						"referenceName": "SnowflakeTitlePrincipal",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
 				},
 				{
 					"dataset": {
-						"referenceName": "SnowflakeTable2",
+						"referenceName": "SnowflakeTitleCrew",
 						"type": "DatasetReference"
 					},
 					"name": "sink2"
@@ -110,7 +110,12 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true) ~> sink2"
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          tconst,",
+				"          directors,",
+				"          writers",
+				"     )) ~> sink2"
 			]
 		}
 	}
