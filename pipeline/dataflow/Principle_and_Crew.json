@@ -112,12 +112,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true,",
-				"     mapColumn(",
-				"          tconst,",
-				"          directors,",
-				"          writers",
-				"     )) ~> sink2"
+				"     stageInsert: true) ~> sink2"
 			]
 		}
 	}
