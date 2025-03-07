@@ -13,7 +13,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DelimitedText2",
+						"referenceName": "titleCrew",
 						"type": "DatasetReference"
 					},
 					"name": "titlecrew"
