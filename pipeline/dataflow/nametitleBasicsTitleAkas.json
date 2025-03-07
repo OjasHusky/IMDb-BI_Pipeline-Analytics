@@ -141,7 +141,7 @@
 				"     skipDuplicateMapOutputs: false) ~> flatteningGenres",
 				"titleAkas derive(types = split(types,','),",
 				"          attributes = split(attributes,',')) ~> derivedColumns3",
-				"derivedColumns3 foldDown(unroll(),",
+				"derivedColumns3 foldDown(unrollMultiple(types,attributes),",
 				"     mapColumn(",
 				"          titleId,",
 				"          ordering,",
