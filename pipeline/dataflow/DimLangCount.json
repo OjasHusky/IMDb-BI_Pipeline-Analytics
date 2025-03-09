@@ -17,9 +17,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "CountryCodes"
-				},
-				{
-					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -64,8 +61,6 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> CountryCodes",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
 				"LangCodes derive(di_load_dt = currentDate(),",
 				"          di_job_id = $job_id) ~> derivedColumn1",
 				"CountryCodes derive(di_load_dt = currentDate(),",
