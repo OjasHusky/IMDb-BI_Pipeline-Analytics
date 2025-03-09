@@ -17,11 +17,39 @@
 						"type": "DatasetReference"
 					},
 					"name": "CountryCodes"
+				},
+				{
+					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimLangCodes",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimCountryCode",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
 			"scriptLines": [
+				"parameters{",
+				"     job_id as string ('10')",
+				"}",
 				"source(output(",
 				"          languageName as string,",
 				"          languageCode as string",
@@ -35,7 +63,59 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> CountryCodes"
+				"     ignoreNoFilesFound: false) ~> CountryCodes",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
+				"LangCodes derive(di_load_dt = currentDate(),",
+				"          di_job_id = $job_id) ~> derivedColumn1",
+				"CountryCodes derive(di_load_dt = currentDate(),",
+				"          di_job_id = $job_id) ~> derivedColumn2",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LANGUAGE_SK as decimal(10,0),",
+				"          LANGUAGE_NAME as string,",
+				"          LANGUAGE_CODE as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          LANGUAGE_NAME = languageName,",
+				"          LANGUAGE_CODE = languageCode,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_LOAD_DT = di_load_dt",
+				"     )) ~> sink1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY_SK as decimal(10,0),",
+				"          COUNTRY_NAME as string,",
+				"          COUNTRY_CODE as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          COUNTRY_NAME = countryName,",
+				"          COUNTRY_CODE = countryCode,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_LOAD_DT = di_load_dt",
+				"     )) ~> sink2"
 			]
 		}
 	}
