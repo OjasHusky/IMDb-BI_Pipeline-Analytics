@@ -1,0 +1,42 @@
+{
+	"name": "DimLangCount",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "LangCodeCSV",
+						"type": "DatasetReference"
+					},
+					"name": "LangCodes"
+				},
+				{
+					"dataset": {
+						"referenceName": "CountryCodes",
+						"type": "DatasetReference"
+					},
+					"name": "CountryCodes"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          languageName as string,",
+				"          languageCode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> LangCodes",
+				"source(output(",
+				"          countryName as string,",
+				"          countryCode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CountryCodes"
+			]
+		}
+	}
+}
