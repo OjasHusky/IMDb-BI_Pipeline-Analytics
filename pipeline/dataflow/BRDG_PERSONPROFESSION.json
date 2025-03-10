@@ -1,0 +1,39 @@
+{
+	"name": "BRDG_PERSONPROFESSION",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeSTF_Person",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"name": "source2"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          PERSON_SK as decimal(10,0),",
+				"          PERSON_ID as string,",
+				"          PERSON_NAME as string,",
+				"          IS_CURRENT as boolean,",
+				"          EFFECTIVE_STARTDATE as date,",
+				"          EFFECTIVE_ENDDATE as date,",
+				"          DI_JOB_ID as string,",
+				"          DI_JOB_DT as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> source1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source2"
+			]
+		}
+	}
+}
