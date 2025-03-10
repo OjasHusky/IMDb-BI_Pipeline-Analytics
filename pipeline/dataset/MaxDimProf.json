@@ -39,7 +39,7 @@
 		],
 		"typeProperties": {
 			"schema": "IMDB_SCHEMA",
-			"table": "STG_NAME_BASICS"
+			"table": "DIM_PROFESSION"
 		}
 	}
 }
