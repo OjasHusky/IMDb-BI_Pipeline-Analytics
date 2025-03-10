@@ -1,5 +1,5 @@
 {
-	"name": "PROFESSION",
+	"name": "Role",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SnowflakeiMDB",
