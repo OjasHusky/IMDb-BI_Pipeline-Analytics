@@ -1,13 +1,91 @@
 {
-	"name": "DimSeries",
+	"name": "DimPerson",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeSTG_Name",
+						"type": "DatasetReference"
+					},
+					"name": "STGNameBasic"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimPerson",
+						"type": "DatasetReference"
+					},
+					"name": "maxPersonSK"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimPerson",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join"
+				},
+				{
+					"name": "surrogateKey"
+				},
+				{
+					"name": "derivedColumn"
+				}
+			],
 			"scriptLines": [
-				""
+				"parameters{",
+				"     job_id as string ('10')",
+				"}",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select distinct nconst, primaryName from STG_NAME_BASICS',",
+				"     format: 'query') ~> STGNameBasic",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(Person_SK),0) as mxPersonSK from DIM_Person',",
+				"     format: 'query') ~> maxPersonSK",
+				"STGNameBasic, maxPersonSK join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join",
+				"join keyGenerate(output(Row_Num as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey",
+				"surrogateKey derive(di_job_id = $job_id,",
+				"          di_load_dt = currentDate(),",
+				"          Person_SK = toInteger(mxPersonSK+Row_Num)) ~> derivedColumn",
+				"derivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          PERSON_SK as decimal(10,0),",
+				"          PERSON_ID as string,",
+				"          PERSON_NAME as string,",
+				"          IS_CURRENT as boolean,",
+				"          EFFECTIVE_STARTDATE as date,",
+				"          EFFECTIVE_ENDDATE as date,",
+				"          DI_JOB_ID as string,",
+				"          DI_JOB_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          PERSON_SK = Person_SK,",
+				"          DI_JOB_ID = di_job_id",
+				"     )) ~> sink1"
 			]
 		}
 	}
