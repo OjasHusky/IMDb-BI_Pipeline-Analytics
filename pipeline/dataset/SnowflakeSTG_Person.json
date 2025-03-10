@@ -1,5 +1,5 @@
 {
-	"name": "SnowflakeSTF_Person",
+	"name": "SnowflakeSTG_Person",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SnowflakeiMDB",
