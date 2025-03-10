@@ -1,9 +1,9 @@
 {
-	"name": "CSVs_to_STG",
+	"name": "STG_to_DimFct",
 	"properties": {
 		"activities": [
 			{
-				"name": "Name_TitleBasics_Akas",
+				"name": "DIMLangCountryCodes",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -18,8 +18,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "nametitleBasicsTitleAkas",
-						"type": "DataFlowReference"
+						"referenceName": "DimLangCount",
+						"type": "DataFlowReference",
+						"parameters": {
+							"job_id": {
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -29,7 +35,7 @@
 				}
 			},
 			{
-				"name": "Episode_Rating",
+				"name": "DimSeries",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -44,7 +50,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "titleEpisode_and_Rating",
+						"referenceName": "DimSeries",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -55,8 +61,10 @@
 				}
 			},
 			{
-				"name": "Principle_Crew",
+				"name": "DimGenre_copy1",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -68,8 +76,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Principle_and_Crew",
-						"type": "DataFlowReference"
+						"referenceName": "DIMGenre",
+						"type": "DataFlowReference",
+						"parameters": {
+							"job_id": {
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -79,8 +93,11 @@
 				}
 			}
 		],
-		"annotations": [],
-		"lastPublishTime": "2025-03-05T17:09:58Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"parameters": {
+			"di_job": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
 }

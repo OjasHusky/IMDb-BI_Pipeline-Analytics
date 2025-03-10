@@ -1,5 +1,5 @@
 {
-	"name": "dataflow2",
+	"name": "titleEpisode_and_Rating",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -68,6 +68,7 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
@@ -89,10 +90,16 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true) ~> sink2"
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          TCONST = tconst,",
+				"          AVERAGERATING = averageRating,",
+				"          NUMVOTES = numVotes",
+				"     )) ~> sink2"
 			]
 		}
 	}

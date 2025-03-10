@@ -1,0 +1,32 @@
+{
+	"name": "LangCodeCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "iMDBDatalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "language_codes.csv",
+				"fileSystem": "bronze-imdb"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "languageName",
+				"type": "String"
+			},
+			{
+				"name": "languageCode",
+				"type": "String"
+			}
+		]
+	}
+}

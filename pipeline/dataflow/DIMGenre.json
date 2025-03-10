@@ -1,0 +1,98 @@
+{
+	"name": "DIMGenre",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Genre",
+						"type": "DatasetReference"
+					},
+					"name": "STGGenre"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimGenre",
+						"type": "DatasetReference"
+					},
+					"name": "maxDimGenre"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimGenre",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Creates an explicit mapping for each drifted column"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     job_id as string ('10')",
+				"}",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT DISTINCT genres FROM STG_TITLE_BASICS WHERE genres != \\'Unknown\\'',",
+				"     format: 'query') ~> STGGenre",
+				"source(output(",
+				"          MXGENRE_SK as decimal(10,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(Genre_SK),0) as mxGenre_SK from DIM_Genre',",
+				"     format: 'query') ~> maxDimGenre",
+				"STGGenre, maxDimGenre join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> Join",
+				"surrogateKey1 derive(di_job_id = $job_id,",
+				"          di_load_dt = currentDate(),",
+				"          Genre_SK = toInteger(MXGENRE_SK+Row_Num)) ~> derivedColumn1",
+				"Join keyGenerate(output(Row_Num as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"derivedColumn1 derive(GENRES = toString(byName('GENRES'))) ~> MapDrifted1",
+				"MapDrifted1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          GENRE_SK as decimal(10,0),",
+				"          GENRE_NAME as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          GENRE_SK = Genre_SK,",
+				"          GENRE_NAME = GENRES,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_LOAD_DT = di_load_dt",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

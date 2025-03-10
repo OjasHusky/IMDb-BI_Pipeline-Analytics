@@ -1,0 +1,49 @@
+{
+	"name": "titlePrincipals",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "iMDBDatalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "title_principals_cleaned.csv",
+				"fileSystem": "bronze-imdb"
+			},
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "tconst",
+				"type": "String"
+			},
+			{
+				"name": "ordering",
+				"type": "String"
+			},
+			{
+				"name": "nconst",
+				"type": "String"
+			},
+			{
+				"name": "category",
+				"type": "String"
+			},
+			{
+				"name": "job",
+				"type": "String"
+			},
+			{
+				"name": "characters",
+				"type": "String"
+			}
+		]
+	}
+}
