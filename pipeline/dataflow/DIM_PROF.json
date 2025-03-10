@@ -1,0 +1,101 @@
+{
+	"name": "DIM_PROF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "fromNameBasics",
+						"type": "DatasetReference"
+					},
+					"name": "FromNameBasics"
+				},
+				{
+					"dataset": {
+						"referenceName": "MaxDimProf",
+						"type": "DatasetReference"
+					},
+					"name": "MaxDIMProf"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sinktoprofession1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "MapDrift",
+					"description": "Creates an explicit mapping for each drifted column"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     job_id as string (\"10\")",
+				"}",
+				"source(output(",
+				"          PRIMARYPROFESSION as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT DISTINCT PRIMARYPROFESSION FROM STG_NAME_BASICS WHERE PRIMARYPROFESSION != \\'Unknown\\'',",
+				"     format: 'query') ~> FromNameBasics",
+				"source(output(",
+				"          MXPROFESSION_SK as decimal(10,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(PROFESSION_SK),0) as mxPROFESSION_SK from DIM_PROFESSION',",
+				"     format: 'query') ~> MaxDIMProf",
+				"FromNameBasics, MaxDIMProf join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 keyGenerate(output(Row_Num as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 derive(di_job_id = $job_id,",
+				"          di_load_dt = currentDate(),",
+				"          column1 = toInteger(MXPROFESSION_SK+Row_Num)) ~> derivedColumn1",
+				"derivedColumn1 derive(PROFESSION = toString(byName('PRIMARYPROFESSION'))) ~> MapDrift",
+				"MapDrift sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          PROFESSION_SK as decimal(10,0),",
+				"          PROFESSION_NAME as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          PROFESSION_SK = MXPROFESSION_SK,",
+				"          PROFESSION_NAME = PRIMARYPROFESSION,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_LOAD_DT = di_load_dt",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
