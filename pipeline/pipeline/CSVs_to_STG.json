@@ -19,6 +19,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"di_job": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"lastPublishTime": "2025-03-05T17:09:58Z"
 	},
