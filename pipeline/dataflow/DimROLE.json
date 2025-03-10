@@ -1,28 +1,28 @@
 {
-	"name": "DimProfession",
+	"name": "DimROLE",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "PROFESSION",
+						"referenceName": "Role",
 						"type": "DatasetReference"
 					},
-					"name": "STGProfession"
+					"name": "STGRole"
 				},
 				{
 					"dataset": {
 						"referenceName": "maxRoleSK",
 						"type": "DatasetReference"
 					},
-					"name": "MaxDimProfession"
+					"name": "MaxDimRole"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Sinktoprofession",
+						"referenceName": "SinkToRole",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -38,7 +38,7 @@
 				},
 				{
 					"name": "derivedColumn1",
-					"description": "Creating/updating the columns 'MXPROFESSION_SK, Row_Num',Row_Num, di_job_id, di_load_dt"
+					"description": "Creating/updating the columns 'MXRole_SK, Row_Num, di_job_id, di_load_dt, column1'"
 				},
 				{
 					"name": "MapDriftef2",
@@ -49,18 +49,21 @@
 				"parameters{",
 				"     job_id as string (\"10\")",
 				"}",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     query: 'SELECT DISTINCT CATEGORY FROM STG_TITLE_PRINCIPALS WHERE CATEGORY != \\'Unknown\\'',",
-				"     format: 'query') ~> STGProfession",
 				"source(output(",
-				"          MXPROFESSION_SK as decimal(10,0)",
+				"          CATEGORY as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     query: 'Select NVL(max(PROFESSION_SK),0) as mxPROFESSION_SK from DIM_PROFESSION',",
-				"     format: 'query') ~> MaxDimProfession",
-				"STGProfession, MaxDimProfession join(1==1,",
+				"     query: 'SELECT DISTINCT CATEGORY FROM STG_TITLE_PRINCIPALS WHERE CATEGORY != \\'Unknown\\'',",
+				"     format: 'query') ~> STGRole",
+				"source(output(",
+				"          MXROLE_SK as decimal(10,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(ROLE_SK),0) as mxROLE_SK from DIM_ROLE',",
+				"     format: 'query') ~> MaxDimRole",
+				"STGRole, MaxDimRole join(1==1,",
 				"     joinType:'cross',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -70,13 +73,13 @@
 				"     stepValue: 1L) ~> surrogateKey1",
 				"surrogateKey1 derive(di_job_id = $job_id,",
 				"          di_load_dt = currentDate(),",
-				"          column1 = toInteger(MXPROFESSION_SK+Row_Num)) ~> derivedColumn1",
+				"          column1 = toInteger(MXROLE_SK+Row_Num)) ~> derivedColumn1",
 				"derivedColumn1 derive(CATEGORY = toString(byName('CATEGORY'))) ~> MapDriftef2",
 				"MapDriftef2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          PROFESSION_SK as decimal(10,0),",
-				"          PROFESSION_NAME as string,",
+				"          ROLE_SK as decimal(10,0),",
+				"          ROLE_NAME as string,",
 				"          DI_JOB_ID as string,",
 				"          DI_LOAD_DT as date",
 				"     ),",
@@ -89,8 +92,8 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     stageInsert: true,",
 				"     mapColumn(",
-				"          PROFESSION_SK = MXPROFESSION_SK,",
-				"          PROFESSION_NAME = CATEGORY,",
+				"          ROLE_SK = MXROLE_SK,",
+				"          ROLE_NAME = CATEGORY,",
 				"          DI_JOB_ID = di_job_id,",
 				"          DI_LOAD_DT = di_load_dt",
 				"     )) ~> sink1"
