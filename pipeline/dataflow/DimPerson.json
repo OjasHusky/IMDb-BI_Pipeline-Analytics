@@ -65,7 +65,7 @@
 				"     stepValue: 1L) ~> surrogateKey",
 				"MapDrifted2 derive(di_job_id = $job_id,",
 				"          di_load_dt = currentDate(),",
-				"          MXPERSONSK = toInteger(MXPERSONSK+Row_Num)) ~> derivedColumn",
+				"          PERSON_SK = toInteger(MXPERSONSK+Row_Num)) ~> derivedColumn",
 				"surrogateKey derive(NCONST = toString(byName('NCONST')),",
 				"          PRIMARYNAME = toString(byName('PRIMARYNAME')),",
 				"          MXPERSONSK = toDecimal(byName('MXPERSONSK'))) ~> MapDrifted2",
@@ -90,7 +90,12 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     stageInsert: true,",
 				"     mapColumn(",
-				"          DI_JOB_ID = di_job_id",
+				"          PERSON_SK,",
+				"          PERSON_ID = NCONST,",
+				"          PERSON_NAME = PRIMARYNAME,",
+				"          EFFECTIVE_STARTDATE = di_load_dt,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_JOB_DT = di_load_dt",
 				"     )) ~> sink1"
 			]
 		}
