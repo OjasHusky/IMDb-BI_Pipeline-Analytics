@@ -93,7 +93,7 @@
 				}
 			},
 			{
-				"name": "DimRoleLoad",
+				"name": "DimRoleLoad1",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -109,7 +109,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DimROLE",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"job_id": {
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -121,6 +127,8 @@
 			{
 				"name": "DIMProfLoad",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -133,7 +141,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DIM_PROF",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"job_id": {
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
