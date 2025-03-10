@@ -1,0 +1,43 @@
+{
+	"name": "Role",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeiMDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "TCONST",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ORDERING",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "NCONST",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CATEGORY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "JOB",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CHARACTERS",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "IMDB_SCHEMA",
+			"table": "STG_TITLE_PRINCIPALS"
+		}
+	}
+}
