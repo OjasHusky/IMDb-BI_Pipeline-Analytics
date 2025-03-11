@@ -1,0 +1,123 @@
+{
+	"name": "DimMovies",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STGMovies",
+						"type": "DatasetReference"
+					},
+					"name": "STGTitleMovies"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimMovies",
+						"type": "DatasetReference"
+					},
+					"name": "maxMoviesSK"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimMovies",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join"
+				},
+				{
+					"name": "surrogateKey"
+				},
+				{
+					"name": "derivedColumn"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Creates an explicit mapping for each drifted column"
+				},
+				{
+					"name": "filteringMovies"
+				},
+				{
+					"name": "MapDrifted2",
+					"description": "Creates an explicit mapping for each drifted column"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     job_id as string ('10')",
+				"}",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT DISTINCT stb.TCONST, stb.TITLETYPE, stb.PRIMARYTITLE, stb.ORIGINALTITLE, stb.RuntimeMinutes FROM STG_TITLE_BASICS stb ',",
+				"     format: 'query') ~> STGTitleMovies",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(Movies_SK),0) as mxMovies_SK from DIM_Movies',",
+				"     format: 'query') ~> maxMoviesSK",
+				"STGTitleMovies, maxMoviesSK join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join",
+				"filteringMovies keyGenerate(output(Row_Num as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey",
+				"MapDrifted1 derive(di_job_id = $job_id,",
+				"          di_load_dt = currentDate(),",
+				"          Movies_SK = toInteger(MXMOVIES_SK+Row_Num)) ~> derivedColumn",
+				"surrogateKey derive(MXMOVIES_SK = toDecimal(byName('MXMOVIES_SK'))) ~> MapDrifted1",
+				"MapDrifted2 filter(equals(lower(trim(TITLETYPE)), 'movie') || \r",
+				"equals(lower(trim(TITLETYPE)), 'tvmovie') || \r",
+				"equals(lower(trim(TITLETYPE)), 'video') || \r",
+				"equals(lower(trim(TITLETYPE)), 'short')) ~> filteringMovies",
+				"join derive(TCONST = toString(byName('TCONST')),",
+				"          TITLETYPE = toString(byName('TITLETYPE')),",
+				"          PRIMARYTITLE = toString(byName('PRIMARYTITLE')),",
+				"          ORIGINALTITLE = toString(byName('ORIGINALTITLE')),",
+				"          RUNTIMEMINUTES = toInteger(byName('RUNTIMEMINUTES')),",
+				"          MXMOVIES_SK = toDecimal(byName('MXMOVIES_SK'))) ~> MapDrifted2",
+				"derivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          MOVIES_SK as decimal(10,0),",
+				"          MOV_TITLE_ID as string,",
+				"          MOV_TITLE_NAME as string,",
+				"          ORIGINAL_TITLE as string,",
+				"          TITLE_TYPE as string,",
+				"          RUNTIME_MINUTES as decimal(10,0),",
+				"          IS_CURRENT as boolean,",
+				"          EFFECTIVE_STARTDATE as date,",
+				"          EFFECTIVE_ENDDATE as date,",
+				"          DI_JOB_ID as string,",
+				"          DI_JOB_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          MOVIES_SK = Movies_SK,",
+				"          MOV_TITLE_ID = TCONST,",
+				"          MOV_TITLE_NAME = PRIMARYTITLE,",
+				"          ORIGINAL_TITLE = ORIGINALTITLE,",
+				"          TITLE_TYPE = TITLETYPE,",
+				"          RUNTIME_MINUTES = RUNTIMEMINUTES,",
+				"          EFFECTIVE_STARTDATE = di_load_dt,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_JOB_DT = di_load_dt",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
