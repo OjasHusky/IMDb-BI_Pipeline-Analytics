@@ -24,6 +24,9 @@
 			"transformations": [
 				{
 					"name": "aggregate"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -41,16 +44,20 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 aggregate(groupBy(titleId,",
+				"          title,",
 				"          ordering,",
 				"          region,",
 				"          language,",
 				"          isOriginalTitle),",
 				"     Row_Count = count(titleId)) ~> aggregate",
-				"aggregate sink(allowSchemaDrift: true,",
+				"aggregate derive(title = iif(length(trim(title)) > 1000, substring(trim(title), 1, 999), trim(title))\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TITLEID as string,",
 				"          ORDERING as decimal(38,0),",
+				"          TITLE as string,",
 				"          REGION as string,",
 				"          LANGUAGE as string,",
 				"          ISORIGINALTITLE as boolean",
@@ -66,6 +73,7 @@
 				"     stageInsert: true,",
 				"     mapColumn(",
 				"          TITLEID = titleId,",
+				"          TITLE = title,",
 				"          ORDERING = ordering,",
 				"          REGION = region,",
 				"          LANGUAGE = language,",
