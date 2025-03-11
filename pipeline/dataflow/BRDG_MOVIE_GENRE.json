@@ -95,7 +95,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 join(TCONST == MOV_TITLE_ID,",
+				"join1, DimMovie join(TCONST == MOV_TITLE_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
