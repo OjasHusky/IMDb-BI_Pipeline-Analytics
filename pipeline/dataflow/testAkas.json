@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -58,7 +61,10 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"flatten1 sink(allowSchemaDrift: true,",
+				"flatten1 derive(title = trim(title),",
+				"          types = trim(types),",
+				"          attributes = trim(attributes)) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TITLEID as string,",
