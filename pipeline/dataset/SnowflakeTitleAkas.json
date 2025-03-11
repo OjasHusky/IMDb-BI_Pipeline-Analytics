@@ -27,10 +27,6 @@
 				"type": "VARCHAR"
 			},
 			{
-				"name": "TYPES",
-				"type": "VARCHAR"
-			},
-			{
 				"name": "ISORIGINALTITLE",
 				"type": "BOOLEAN"
 			}
