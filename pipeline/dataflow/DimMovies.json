@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "STGMovies",
+						"referenceName": "STGMoviesSeries",
 						"type": "DatasetReference"
 					},
 					"name": "STGTitleMovies"
