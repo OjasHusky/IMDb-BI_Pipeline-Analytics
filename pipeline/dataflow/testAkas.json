@@ -1,0 +1,84 @@
+{
+	"name": "testAkas",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "title_akas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTitleAkas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          titleId as string,",
+				"          ordering as string,",
+				"          title as string,",
+				"          region as string,",
+				"          language as string,",
+				"          types as string,",
+				"          attributes as string,",
+				"          isOriginalTitle as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(types = split(types,','),",
+				"          attributes = split(attributes,',')) ~> derivedColumn1",
+				"derivedColumn1 foldDown(unrollMultiple(types,attributes),",
+				"     mapColumn(",
+				"          titleId,",
+				"          ordering,",
+				"          title,",
+				"          region,",
+				"          language,",
+				"          types,",
+				"          attributes,",
+				"          isOriginalTitle",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TITLEID as string,",
+				"          ORDERING as decimal(38,0),",
+				"          TITLE as string,",
+				"          REGION as string,",
+				"          LANGUAGE as string,",
+				"          TYPES as string,",
+				"          ATTRIBUTES as string,",
+				"          ISORIGINALTITLE as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> sink1"
+			]
+		}
+	}
+}
