@@ -19,10 +19,6 @@
 				"scale": 0
 			},
 			{
-				"name": "TITLE",
-				"type": "VARCHAR"
-			},
-			{
 				"name": "REGION",
 				"type": "VARCHAR"
 			},
