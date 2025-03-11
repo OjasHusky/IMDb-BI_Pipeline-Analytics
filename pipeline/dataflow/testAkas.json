@@ -30,6 +30,9 @@
 				},
 				{
 					"name": "derivedColumn2"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -48,7 +51,7 @@
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 derive(types = split(types,','),",
 				"          attributes = split(attributes,',')) ~> derivedColumn1",
-				"derivedColumn1 foldDown(unrollMultiple(types,attributes),",
+				"select1 foldDown(unrollMultiple(types,attributes),",
 				"     mapColumn(",
 				"          titleId,",
 				"          ordering,",
@@ -63,6 +66,17 @@
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
 				"flatten1 derive(types = iif(length(trim(types)) > 1000, substring(trim(types), 1, 1000), trim(types)),",
 				"          attributes = iif(length(trim(attributes)) > 1000, substring(trim(attributes), 1, 1000), trim(attributes))) ~> derivedColumn2",
+				"derivedColumn1 select(mapColumn(",
+				"          titleId,",
+				"          ordering,",
+				"          region,",
+				"          language,",
+				"          types,",
+				"          attributes,",
+				"          isOriginalTitle",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
 				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
