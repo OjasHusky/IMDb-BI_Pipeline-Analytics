@@ -1,169 +1,550 @@
 {
+
 	"name": "STG_to_DimFct",
+
 	"properties": {
+
 		"activities": [
+
 			{
+
 				"name": "DIMLangCountryCodes",
+
 				"type": "ExecuteDataFlow",
+
 				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+
 				"dependsOn": [],
+
 				"policy": {
+
 					"timeout": "0.12:00:00",
+
 					"retry": 0,
+
 					"retryIntervalInSeconds": 30,
+
 					"secureOutput": false,
+
 					"secureInput": false
+
 				},
+
 				"userProperties": [],
+
 				"typeProperties": {
+
 					"dataflow": {
+
 						"referenceName": "DimLangCount",
+
 						"type": "DataFlowReference",
+
 						"parameters": {
+
 							"job_id": {
+
 								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
 								"type": "Expression"
+
 							}
+
 						}
+
 					},
+
 					"compute": {
+
 						"coreCount": 8,
+
 						"computeType": "General"
+
 					},
+
 					"traceLevel": "Fine"
+
 				}
+
 			},
+
 			{
+
 				"name": "DimPerson",
+
 				"type": "ExecuteDataFlow",
+
+				"state": "Inactive",
+
 				"dependsOn": [],
+
 				"policy": {
+
 					"timeout": "0.12:00:00",
+
 					"retry": 0,
+
 					"retryIntervalInSeconds": 30,
+
 					"secureOutput": false,
+
 					"secureInput": false
+
 				},
+
 				"userProperties": [],
+
 				"typeProperties": {
+
 					"dataflow": {
+
 						"referenceName": "DimPerson",
+
 						"type": "DataFlowReference",
+
 						"parameters": {
+
 							"job_id": {
+
 								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
 								"type": "Expression"
+
 							}
+
 						}
+
 					},
+
 					"compute": {
+
 						"coreCount": 8,
+
 						"computeType": "General"
+
 					},
+
 					"traceLevel": "Fine"
+
 				}
+
 			},
+
 			{
+
 				"name": "DimGenre",
+
 				"type": "ExecuteDataFlow",
+
 				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+
 				"dependsOn": [],
+
 				"policy": {
+
 					"timeout": "0.12:00:00",
+
 					"retry": 0,
+
 					"retryIntervalInSeconds": 30,
+
 					"secureOutput": false,
+
 					"secureInput": false
+
 				},
+
 				"userProperties": [],
+
 				"typeProperties": {
+
 					"dataflow": {
+
 						"referenceName": "DIMGenre",
+
 						"type": "DataFlowReference",
+
 						"parameters": {
+
 							"job_id": {
+
 								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
 								"type": "Expression"
+
 							}
+
 						}
+
 					},
+
 					"compute": {
+
 						"coreCount": 8,
+
 						"computeType": "General"
+
 					},
+
 					"traceLevel": "Fine"
+
 				}
+
 			},
+
 			{
-				"name": "DimRoleLoad1",
+
+				"name": "DimMovies",
+
 				"type": "ExecuteDataFlow",
+
 				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+
 				"dependsOn": [],
+
 				"policy": {
+
 					"timeout": "0.12:00:00",
+
 					"retry": 0,
+
 					"retryIntervalInSeconds": 30,
+
 					"secureOutput": false,
+
 					"secureInput": false
+
 				},
+
 				"userProperties": [],
+
 				"typeProperties": {
+
 					"dataflow": {
-						"referenceName": "DimROLE",
+
+						"referenceName": "DimMovies",
+
 						"type": "DataFlowReference",
+
 						"parameters": {
+
 							"job_id": {
+
 								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
 								"type": "Expression"
+
 							}
+
 						}
+
 					},
+
 					"compute": {
+
 						"coreCount": 8,
+
 						"computeType": "General"
+
 					},
+
 					"traceLevel": "Fine"
+
 				}
-			},
-			{
-				"name": "DIMProfLoad",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "DIM_PROF",
-						"type": "DataFlowReference",
-						"parameters": {
-							"job_id": {
-								"value": "'@{substring(pipeline().RunId,1,10)}'",
-								"type": "Expression"
-							}
-						}
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
+
 			}
+
 		],
+
 		"parameters": {
+
 			"di_job": {
+
 				"type": "string"
+
 			}
+
 		},
+
 		"annotations": []
+
 	}
+
 }
+
+ 
+{
+
+	"name": "STG_to_DimFct",
+
+	"properties": {
+
+		"activities": [
+
+			{
+
+				"name": "DIMLangCountryCodes",
+
+				"type": "ExecuteDataFlow",
+
+				"state": "Inactive",
+
+				"dependsOn": [],
+
+				"policy": {
+
+					"timeout": "0.12:00:00",
+
+					"retry": 0,
+
+					"retryIntervalInSeconds": 30,
+
+					"secureOutput": false,
+
+					"secureInput": false
+
+				},
+
+				"userProperties": [],
+
+				"typeProperties": {
+
+					"dataflow": {
+
+						"referenceName": "DimLangCount",
+
+						"type": "DataFlowReference",
+
+						"parameters": {
+
+							"job_id": {
+
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
+								"type": "Expression"
+
+							}
+
+						}
+
+					},
+
+					"compute": {
+
+						"coreCount": 8,
+
+						"computeType": "General"
+
+					},
+
+					"traceLevel": "Fine"
+
+				}
+
+			},
+
+			{
+
+				"name": "DimPerson",
+
+				"type": "ExecuteDataFlow",
+
+				"state": "Inactive",
+
+				"dependsOn": [],
+
+				"policy": {
+
+					"timeout": "0.12:00:00",
+
+					"retry": 0,
+
+					"retryIntervalInSeconds": 30,
+
+					"secureOutput": false,
+
+					"secureInput": false
+
+				},
+
+				"userProperties": [],
+
+				"typeProperties": {
+
+					"dataflow": {
+
+						"referenceName": "DimPerson",
+
+						"type": "DataFlowReference",
+
+						"parameters": {
+
+							"job_id": {
+
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
+								"type": "Expression"
+
+							}
+
+						}
+
+					},
+
+					"compute": {
+
+						"coreCount": 8,
+
+						"computeType": "General"
+
+					},
+
+					"traceLevel": "Fine"
+
+				}
+
+			},
+
+			{
+
+				"name": "DimGenre",
+
+				"type": "ExecuteDataFlow",
+
+				"state": "Inactive",
+
+				"dependsOn": [],
+
+				"policy": {
+
+					"timeout": "0.12:00:00",
+
+					"retry": 0,
+
+					"retryIntervalInSeconds": 30,
+
+					"secureOutput": false,
+
+					"secureInput": false
+
+				},
+
+				"userProperties": [],
+
+				"typeProperties": {
+
+					"dataflow": {
+
+						"referenceName": "DIMGenre",
+
+						"type": "DataFlowReference",
+
+						"parameters": {
+
+							"job_id": {
+
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
+								"type": "Expression"
+
+							}
+
+						}
+
+					},
+
+					"compute": {
+
+						"coreCount": 8,
+
+						"computeType": "General"
+
+					},
+
+					"traceLevel": "Fine"
+
+				}
+
+			},
+
+			{
+
+				"name": "DimMovies",
+
+				"type": "ExecuteDataFlow",
+
+				"state": "Inactive",
+
+				"dependsOn": [],
+
+				"policy": {
+
+					"timeout": "0.12:00:00",
+
+					"retry": 0,
+
+					"retryIntervalInSeconds": 30,
+
+					"secureOutput": false,
+
+					"secureInput": false
+
+				},
+
+				"userProperties": [],
+
+				"typeProperties": {
+
+					"dataflow": {
+
+						"referenceName": "DimMovies",
+
+						"type": "DataFlowReference",
+
+						"parameters": {
+
+							"job_id": {
+
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
+
+								"type": "Expression"
+
+							}
+
+						}
+
+					},
+
+					"compute": {
+
+						"coreCount": 8,
+
+						"computeType": "General"
+
+					},
+
+					"traceLevel": "Fine"
+
+				}
+
+			}
+
+		],
+
+		"parameters": {
+
+			"di_job": {
+
+				"type": "string"
+
+			}
+
+		},
+
+		"annotations": []
+
+	}
+
+}
+
+ 
