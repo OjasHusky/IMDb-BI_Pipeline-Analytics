@@ -16,7 +16,8 @@
 						"referenceName": "DimMovies",
 						"type": "DatasetReference"
 					},
-					"name": "DimMovies"
+					"name": "DimMovies",
+					"description": "Import data from DimMovies"
 				},
 				{
 					"dataset": {
