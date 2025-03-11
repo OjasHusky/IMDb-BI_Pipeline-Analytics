@@ -55,7 +55,6 @@
 				"     mapColumn(",
 				"          titleId,",
 				"          ordering,",
-				"          title,",
 				"          region,",
 				"          language,",
 				"          types,",
