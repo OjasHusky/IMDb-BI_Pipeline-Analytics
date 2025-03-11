@@ -23,10 +23,10 @@
 			],
 			"transformations": [
 				{
-					"name": "aggregate"
+					"name": "derivedColumn1"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "aggregate1"
 				}
 			],
 			"scriptLines": [
@@ -43,22 +43,18 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 aggregate(groupBy(titleId,",
-				"          ordering,",
-				"          region,",
-				"          language,",
-				"          isOriginalTitle),",
-				"     Row_Count = count(titleId)) ~> aggregate",
-				"aggregate derive(region = iif(length(trim(region)) > 1000, substring(trim(region), 1, 999), trim(region)),",
+				"aggregate1 derive(region = iif(length(trim(region)) > 1000, substring(trim(region), 1, 999), trim(region)),",
 				"          language = iif(length(trim(language)) > 1000, substring(trim(language), 1, 999), trim(language))) ~> derivedColumn1",
+				"source1 aggregate(groupBy(titleId,",
+				"          region,",
+				"          language),",
+				"     Row_Count = count(titleId)) ~> aggregate1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TITLEID as string,",
-				"          ORDERING as decimal(38,0),",
 				"          REGION as string,",
-				"          LANGUAGE as string,",
-				"          ISORIGINALTITLE as boolean",
+				"          LANGUAGE as string",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -71,10 +67,8 @@
 				"     stageInsert: true,",
 				"     mapColumn(",
 				"          TITLEID = titleId,",
-				"          ORDERING = ordering,",
 				"          REGION = region,",
-				"          LANGUAGE = language,",
-				"          ISORIGINALTITLE = isOriginalTitle",
+				"          LANGUAGE = language",
 				"     )) ~> sink1"
 			]
 		}
