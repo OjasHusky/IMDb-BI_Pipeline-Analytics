@@ -17,13 +17,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "titleBasics"
-				},
-				{
-					"dataset": {
-						"referenceName": "title_akas",
-						"type": "DatasetReference"
-					},
-					"name": "titleAkas"
 				}
 			],
 			"sinks": [
@@ -40,13 +33,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
-				},
-				{
-					"dataset": {
-						"referenceName": "SnowflakeTitleAkas",
-						"type": "DatasetReference"
-					},
-					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -61,12 +47,6 @@
 				},
 				{
 					"name": "flatteningGenres"
-				},
-				{
-					"name": "derivedColumns3"
-				},
-				{
-					"name": "flatteningTypesAttriCols"
 				}
 			],
 			"scriptLines": [
@@ -95,19 +75,6 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> titleBasics",
-				"source(output(",
-				"          titleId as string,",
-				"          ordering as string,",
-				"          title as string,",
-				"          region as string,",
-				"          language as string,",
-				"          types as string,",
-				"          attributes as string,",
-				"          isOriginalTitle as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> titleAkas",
 				"nameBasics derive(primaryProfession = split(primaryProfession,','),",
 				"          knownForTitles = split(knownForTitles,',')) ~> derivedColumns1",
 				"derivedColumns1 foldDown(unrollMultiple(primaryProfession,knownForTitles),",
@@ -136,21 +103,6 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatteningGenres",
-				"titleAkas derive(types = split(types,','),",
-				"          attributes = split(attributes,',')) ~> derivedColumns3",
-				"derivedColumns3 foldDown(unrollMultiple(types,attributes),",
-				"     mapColumn(",
-				"          titleId,",
-				"          ordering,",
-				"          title,",
-				"          region,",
-				"          language,",
-				"          types,",
-				"          attributes,",
-				"          isOriginalTitle",
-				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatteningTypesAttriCols",
 				"flatteningPrfsTitleCols sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -210,38 +162,7 @@
 				"          ENDYEAR = endYear,",
 				"          RUNTIMEMINUTES = runtimeMinutes,",
 				"          GENRES = genres",
-				"     )) ~> sink1",
-				"flatteningTypesAttriCols sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
-				"          TITLEID as string,",
-				"          ORDERING as decimal(38,0),",
-				"          TITLE as string,",
-				"          REGION as string,",
-				"          LANGUAGE as string,",
-				"          TYPES as string,",
-				"          ATTRIBUTES as string,",
-				"          ISORIGINALTITLE as boolean",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     truncate:true,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true,",
-				"     mapColumn(",
-				"          TITLEID = titleId,",
-				"          ORDERING = ordering,",
-				"          TITLE = title,",
-				"          REGION = region,",
-				"          LANGUAGE = language,",
-				"          TYPES = types,",
-				"          ATTRIBUTES = attributes,",
-				"          ISORIGINALTITLE = isOriginalTitle",
-				"     )) ~> sink2"
+				"     )) ~> sink1"
 			]
 		}
 	}
