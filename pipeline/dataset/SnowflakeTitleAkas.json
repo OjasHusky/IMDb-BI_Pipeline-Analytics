@@ -13,22 +13,12 @@
 				"type": "VARCHAR"
 			},
 			{
-				"name": "ORDERING",
-				"type": "NUMBER",
-				"precision": 38,
-				"scale": 0
-			},
-			{
 				"name": "REGION",
 				"type": "VARCHAR"
 			},
 			{
 				"name": "LANGUAGE",
 				"type": "VARCHAR"
-			},
-			{
-				"name": "ISORIGINALTITLE",
-				"type": "BOOLEAN"
 			}
 		],
 		"typeProperties": {
