@@ -1,0 +1,65 @@
+{
+	"name": "DimMovie",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeiMDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "MOVIES_SK",
+				"type": "NUMBER",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "MOV_TITLE_ID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "MOV_TITLE_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ORIGINAL_TITLE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "TITLE_TYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "RUNTIME_MINUTES",
+				"type": "NUMBER",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "IS_CURRENT",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "EFFECTIVE_STARTDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "EFFECTIVE_ENDDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "DI_JOB_ID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "DI_JOB_DT",
+				"type": "DATE"
+			}
+		],
+		"typeProperties": {
+			"schema": "IMDB_SCHEMA",
+			"table": "DIM_MOVIES"
+		}
+	}
+}
