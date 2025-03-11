@@ -13,18 +13,18 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DimMovies",
-						"type": "DatasetReference"
-					},
-					"name": "DimMovies",
-					"description": "Import data from DimMovies"
-				},
-				{
-					"dataset": {
 						"referenceName": "SnowflakeTitleBasics",
 						"type": "DatasetReference"
 					},
 					"name": "TitleBasics"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimMovie",
+						"type": "DatasetReference"
+					},
+					"name": "DimMovie",
+					"description": "Import data from DimMovie"
 				}
 			],
 			"sinks": [
@@ -61,6 +61,20 @@
 				"     validateSchema: false,",
 				"     format: 'table') ~> DimGenre",
 				"source(output(",
+				"          TCONST as string,",
+				"          TITLETYPE as string,",
+				"          PRIMARYTITLE as string,",
+				"          ORIGINALTITLE as string,",
+				"          ISADULT as boolean,",
+				"          STARTYEAR as decimal(38,0),",
+				"          ENDYEAR as decimal(38,0),",
+				"          RUNTIMEMINUTES as decimal(38,0),",
+				"          GENRES as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> TitleBasics",
+				"source(output(",
 				"          MOVIES_SK as decimal(10,0),",
 				"          MOV_TITLE_ID as string,",
 				"          MOV_TITLE_NAME as string,",
@@ -75,27 +89,13 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'table') ~> DimMovies",
-				"source(output(",
-				"          TCONST as string,",
-				"          TITLETYPE as string,",
-				"          PRIMARYTITLE as string,",
-				"          ORIGINALTITLE as string,",
-				"          ISADULT as boolean,",
-				"          STARTYEAR as decimal(38,0),",
-				"          ENDYEAR as decimal(38,0),",
-				"          RUNTIMEMINUTES as decimal(38,0),",
-				"          GENRES as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     format: 'table') ~> TitleBasics",
+				"     format: 'table') ~> DimMovie",
 				"DimGenre, TitleBasics join(GENRE_NAME == GENRES,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1, DimMovies join(TCONST == MOV_TITLE_ID,",
+				"join1 join(TCONST == MOV_TITLE_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
