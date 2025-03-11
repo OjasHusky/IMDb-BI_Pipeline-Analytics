@@ -1,5 +1,5 @@
 {
-	"name": "STGMovies",
+	"name": "STGMoviesSeries",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SnowflakeiMDB",

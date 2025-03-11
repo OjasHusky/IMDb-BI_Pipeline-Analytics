@@ -1,0 +1,76 @@
+{
+	"name": "titleAkas",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "title_akas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTitleAkas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          titleId as string,",
+				"          ordering as string,",
+				"          title as string,",
+				"          region as string,",
+				"          language as string,",
+				"          types as string,",
+				"          attributes as string,",
+				"          isOriginalTitle as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"aggregate1 derive(region = iif(length(trim(region)) > 10, substring(trim(region), 1, 7), trim(region)),",
+				"          language = iif(length(trim(language)) > 10, substring(trim(language), 1, 7), trim(language))) ~> derivedColumn1",
+				"source1 aggregate(groupBy(titleId,",
+				"          region,",
+				"          language),",
+				"     Row_Count = count(titleId)) ~> aggregate1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TITLEID as string,",
+				"          REGION as string,",
+				"          LANGUAGE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          TITLEID = titleId,",
+				"          REGION = region,",
+				"          LANGUAGE = language",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

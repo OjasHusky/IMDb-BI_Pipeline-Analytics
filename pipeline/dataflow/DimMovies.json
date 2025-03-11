@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "STGMovies",
+						"referenceName": "STGMoviesSeries",
 						"type": "DatasetReference"
 					},
 					"name": "STGTitleMovies"
@@ -43,9 +43,6 @@
 					"description": "Creates an explicit mapping for each drifted column"
 				},
 				{
-					"name": "filteringMovies"
-				},
-				{
 					"name": "MapDrifted2",
 					"description": "Creates an explicit mapping for each drifted column"
 				}
@@ -56,7 +53,7 @@
 				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     query: 'SELECT DISTINCT stb.TCONST, stb.TITLETYPE, stb.PRIMARYTITLE, stb.ORIGINALTITLE, stb.RuntimeMinutes FROM STG_TITLE_BASICS stb ',",
+				"     query: 'SELECT DISTINCT stb.TCONST, stb.TITLETYPE, stb.PRIMARYTITLE, stb.ORIGINALTITLE, stb.RuntimeMinutes FROM STG_TITLE_BASICS stb\\nwhere titleType IN (\\'short\\', \\'movie\\', \\'tvMovie\\') ',",
 				"     format: 'query') ~> STGTitleMovies",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -67,17 +64,13 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join",
-				"filteringMovies keyGenerate(output(Row_Num as long),",
+				"MapDrifted2 keyGenerate(output(Row_Num as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKey",
 				"MapDrifted1 derive(di_job_id = $job_id,",
 				"          di_load_dt = currentDate(),",
 				"          Movies_SK = toInteger(MXMOVIES_SK+Row_Num)) ~> derivedColumn",
 				"surrogateKey derive(MXMOVIES_SK = toDecimal(byName('MXMOVIES_SK'))) ~> MapDrifted1",
-				"MapDrifted2 filter(equals(lower(trim(TITLETYPE)), 'movie') || \r",
-				"equals(lower(trim(TITLETYPE)), 'tvmovie') || \r",
-				"equals(lower(trim(TITLETYPE)), 'video') || \r",
-				"equals(lower(trim(TITLETYPE)), 'short')) ~> filteringMovies",
 				"join derive(TCONST = toString(byName('TCONST')),",
 				"          TITLETYPE = toString(byName('TITLETYPE')),",
 				"          PRIMARYTITLE = toString(byName('PRIMARYTITLE')),",

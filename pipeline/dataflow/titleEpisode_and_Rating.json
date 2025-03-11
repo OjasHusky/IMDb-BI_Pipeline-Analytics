@@ -35,7 +35,11 @@
 					"name": "sink2"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          tconst as string,",
@@ -45,7 +49,6 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     limit: 1000,",
 				"     ignoreNoFilesFound: false) ~> titleEpisode",
 				"source(output(",
 				"          tconst as string,",
@@ -54,15 +57,17 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     limit: 1000,",
 				"     ignoreNoFilesFound: false) ~> titleRating",
-				"titleEpisode sink(allowSchemaDrift: true,",
+				"titleEpisode derive(Season_Episode = iif(seasonNumber == '-1' && episodeNumber == '-1', '0', \r",
+				"    concat('S', lpad(toString(seasonNumber), 2, '0'), 'E', lpad(toString(episodeNumber), 2, '0'))\r",
+				")\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          TCONST as string,",
 				"          PARENTTCONST as string,",
-				"          SEASONNUMBER as decimal(38,0),",
-				"          EPISODENUMBER as decimal(38,0)",
+				"          SEASON_EPISODE as string",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -76,8 +81,7 @@
 				"     mapColumn(",
 				"          TCONST = tconst,",
 				"          PARENTTCONST = parentTconst,",
-				"          SEASONNUMBER = seasonNumber,",
-				"          EPISODENUMBER = episodeNumber",
+				"          SEASON_EPISODE = Season_Episode",
 				"     )) ~> sink1",
 				"titleRating sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",

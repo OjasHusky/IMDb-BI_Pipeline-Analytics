@@ -1,0 +1,152 @@
+{
+	"name": "DimSeriesLoad",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STGMoviesSeries",
+						"type": "DatasetReference"
+					},
+					"name": "STGSeries"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimSeries",
+						"type": "DatasetReference"
+					},
+					"name": "maxSeriesSK"
+				},
+				{
+					"dataset": {
+						"referenceName": "SnowflaketitleEpisode",
+						"type": "DatasetReference"
+					},
+					"name": "STGSeasonEpisodeMapping"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimSeries",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "crossjoin"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     job_id as string ('10')",
+				"}",
+				"source(output(",
+				"          TCONST as string,",
+				"          TITLETYPE as string,",
+				"          PRIMARYTITLE as string,",
+				"          ORIGINALTITLE as string,",
+				"          ISADULT as boolean,",
+				"          STARTYEAR as decimal(38,0),",
+				"          ENDYEAR as decimal(38,0),",
+				"          RUNTIMEMINUTES as decimal(38,0),",
+				"          GENRES as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> STGSeries",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'Select NVL(max(Series_SK),0) as mxSeries_SK from DIM_Series',",
+				"     format: 'query') ~> maxSeriesSK",
+				"source(output(",
+				"          TCONST as string,",
+				"          PARENTTCONST as string,",
+				"          SEASON_EPISODE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> STGSeasonEpisodeMapping",
+				"select1, STGSeasonEpisodeMapping join(select1@TCONST == STGSeasonEpisodeMapping@TCONST",
+				"     && select1@TCONST == PARENTTCONST,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join",
+				"STGSeries select(mapColumn(",
+				"          TCONST,",
+				"          TITLETYPE,",
+				"          ORIGINALTITLE,",
+				"          PRIMARYTITLE",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"filter1, maxSeriesSK join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> crossjoin",
+				"join filter(equals(lower(trim(TITLETYPE)), 'tvepisode') || \r",
+				"equals(lower(trim(TITLETYPE)), 'tvseries') || \r",
+				"equals(lower(trim(TITLETYPE)), 'tvminiseries') || \r",
+				"equals(lower(trim(TITLETYPE)), 'tvpilot')\r",
+				") ~> filter1",
+				"surrogateKey derive(di_job_id = $job_id,",
+				"          di_load_dt = currentDate(),",
+				"          Series_SK = toInteger(MXSERIES_SK+Row_Num)) ~> derivedColumn1",
+				"crossjoin keyGenerate(output(Row_Num as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          SERIES_SK as decimal(10,0),",
+				"          SRS_TITLE_ID as string,",
+				"          EPSD_TITLE_ID as string,",
+				"          SRS_TITLE_NAME as string,",
+				"          EPSD_TITLE_NAME as string,",
+				"          SEASON_EPISODE as string,",
+				"          IS_CURRENT as boolean,",
+				"          EFFECTIVE_STARTDATE as date,",
+				"          EFFECTIVE_ENDDATE as date,",
+				"          DI_JOB_ID as string,",
+				"          DI_JOB_DT as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          SERIES_SK = Series_SK,",
+				"          SRS_TITLE_ID = PARENTTCONST,",
+				"          EPSD_TITLE_ID = select1@TCONST,",
+				"          SEASON_EPISODE,",
+				"          EFFECTIVE_STARTDATE = di_load_dt,",
+				"          DI_JOB_ID = di_job_id,",
+				"          DI_JOB_DT = di_load_dt",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

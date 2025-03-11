@@ -17,16 +17,8 @@
 				"type": "VARCHAR"
 			},
 			{
-				"name": "SEASONNUMBER",
-				"type": "NUMBER",
-				"precision": 38,
-				"scale": 0
-			},
-			{
-				"name": "EPISODENUMBER",
-				"type": "NUMBER",
-				"precision": 38,
-				"scale": 0
+				"name": "SEASON_EPISODE",
+				"type": "VARCHAR"
 			}
 		],
 		"typeProperties": {
