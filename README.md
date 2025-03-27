@@ -1,3 +1,25 @@
-# IMDb-BI_Pipeline-Analytics
+# IMDB Data Pipeline & Dashboard 🚀
 
-Built an end-to-end data warehouse and analytics solution using the IMDb dataset. Utilized Python's ydataprofile for data profiling and minor cleaning tasks to ensure high-quality inputs. Designed ETL pipelines with Azure Data Factory to load and transform data into Snowflake. Created dimensional models to support analytical queries and developed interactive dashboards in Power BI/Tableau to uncover insights on movie trends, ratings, and genres. The solution enhanced data visibility and enabled comprehensive analysis for decision-making.
+![IMDB Dashboard](path/to/your/image.png)
+
+## Project Overview
+Our data team successfully completed an end-to-end data pipeline project using IMDB datasets. We were given 7 uncleaned datasets containing ratings, movie information, series details, and people involved in the industry. The goal was to process and visualize key insights in a single, intuitive Power BI dashboard.
+
+## Steps We Followed 🛠️
+1. **Data Cleaning:** Used Python for data wrangling and preprocessing.
+2. **Data Staging:** Loaded the cleaned data into Snowflake using Azure Data Factory (ADF).
+3. **Dimensional Modeling:** Designed a structured dimensional model to meet 15+ business requirements.
+4. **ETL Pipeline:** Managed Stage-to-Dimension and Fact table loads using ADF.
+5. **Visualization:** Built a Power BI dashboard covering all business insights in a simple, engaging format.
+
+## Key Achievements 🎯
+- Successfully handled multiple uncleaned datasets and transformed them into a structured warehouse.
+- Optimized the data pipeline for efficiency and scalability.
+- Created a user-friendly Power BI dashboard that effectively presents insights.
+
+## Contributors 🙌
+- **Sharath Chandra**
+- **Ojas Misra**
+- **Yen Pang (Leo) Chen**
+
+
