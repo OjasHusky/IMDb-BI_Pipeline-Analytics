@@ -1,6 +1,6 @@
 # IMDB Data Pipeline & Dashboard 🚀
 
-!((path/to/your/image.png](https://github.com/OjasHusky/IMDb-BI_Pipeline-Analytics/blob/main/Screenshot%202025-03-27%20at%2012.29.42%E2%80%AFPM.png))
+!((Dashboard Preview : (https://github.com/OjasHusky/IMDb-BI_Pipeline-Analytics/blob/main/Screenshot%202025-03-27%20at%2012.29.42%E2%80%AFPM.png))
 
 ## Project Overview
 Our data team successfully completed an end-to-end data pipeline project using IMDB datasets. We were given 7 uncleaned datasets containing ratings, movie information, series details, and people involved in the industry. The goal was to process and visualize key insights in a single, intuitive Power BI dashboard.
